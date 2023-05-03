@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: websvc
+spec:
+  selector:
+    run: poller
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 80
+    protocol: TCP
+  type: NodePort
