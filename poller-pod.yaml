@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: poller
+  labels:
+    run: poller
+spec:
+  containers:
+  - name: poller
+    image: evolvecybertraining/poller-app:v1
+    args: 
+      - -h 
+      - localhost
+      - -p
+      - "80"
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: haproxy-config-vol
+      mountPath: /usr/local/etc/haproxy/
+  - name: haproxy
+    image: haproxy
+    args: 
+      - "-f"
+      - "/usr/local/etc/haproxy/haproxy.cfg" 
+    volumeMounts:
+    - name: haproxy-config-vol
+      mountPath: /usr/local/etc/haproxy/haproxy.cfg
+    ports:
+    - containerPort: 80
+  volumes:
+  - name: haproxy-config-vol
+    configMap:
+      name: haproxy-config
+  restartPolicy: Never
